@@ -33,6 +33,15 @@ class OCStoryboardsApplication: CommandLineApplication {
 							sourceFileContents.append("    static let \(storyboardIdentifier) = \"\(storyboardIdentifier)\"\n")
 						}
 					}
+					if let connectionsElement = $0.elements(forName: "connections").first {
+						let segueElements = connectionsElement.elements(forName: "segue")
+						segueElements.forEach {
+							if let segueIdentifierAttribute = $0.attribute(forName: "identifier"),
+								let segueIdent = segueIdentifierAttribute.stringValue {
+								Swift.print("Segue: \(segueIdent)")
+							}
+						}
+					}
 				}
 			}
 
