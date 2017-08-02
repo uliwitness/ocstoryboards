@@ -30,7 +30,8 @@ class OCStoryboardsApplication: CommandLineApplication {
 	
 	override func open(url: URL) -> Bool {
 		do {
-			let baseName = url.deletingPathExtension().lastPathComponent + "Storyboard"
+			let baseName = url.deletingPathExtension().lastPathComponent
+			let className = baseName + "Storyboard"
 			
 			let xmlDoc = try XMLDocument(contentsOf: url, options: 0)
 			
@@ -39,7 +40,8 @@ class OCStoryboardsApplication: CommandLineApplication {
 			let scenes = scenesElement?.elements(forName: "scene")
 			var sourceFileContents: String = ""
 			
-			sourceFileContents.append("enum \(baseName) {\n")
+			sourceFileContents.append("enum \(className) {\n")
+			sourceFileContents.append("    static let identifier = \"\(baseName)\"\n")
 			
 			scenes?.forEach {
 				let objectsElement = $0.elements(forName: "objects").first
@@ -65,7 +67,7 @@ class OCStoryboardsApplication: CommandLineApplication {
 
 			sourceFileContents.append("}\n")
 			
-			try sourceFileContents.write(toFile: baseName + ".swift", atomically: true, encoding: .utf8)
+			try sourceFileContents.write(toFile: className + ".swift", atomically: true, encoding: .utf8)
 
 			return true
 		} catch {
